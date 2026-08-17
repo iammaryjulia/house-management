@@ -1,3 +1,5 @@
-streamlit
-supabase
+flask
+flask-cors
 python-dotenv
+gunicorn
+psycopg2-binary

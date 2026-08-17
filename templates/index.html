@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>巨鴻地產 - 桃竹苗房源平台</title>
+    <meta
+      name="description"
+      content="巨鴻地產致力於提供桃園、新竹、苗栗地區最優質的房屋買賣和租賃服務。"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei",
+          sans-serif;
+        color: #333;
+        line-height: 1.6;
+      }
+
+      /* 導航欄 */
+      nav {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      nav .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      nav ul {
+        list-style: none;
+        display: flex;
+        gap: 2rem;
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        transition: opacity 0.3s;
+      }
+
+      nav a:hover {
+        opacity: 0.8;
+      }
+
+      /* 英雄區 */
+      .hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4rem 2rem;
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .hero p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+      }
+
+      .search-bar {
+        display: flex;
+        gap: 0.5rem;
+        max-width: 800px;
+        margin: 0 auto;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .search-bar input,
+      .search-bar select,
+      .search-bar button {
+        padding: 0.8rem 1rem;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+      }
+
+      .search-bar input {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .search-bar button {
+        background: #ff6b6b;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.3s;
+      }
+
+      .search-bar button:hover {
+        background: #ff5252;
+      }
+
+      /* 主容器 */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+      }
+
+      /* 特色區 */
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+      }
+
+      .feature-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition:
+          transform 0.3s,
+          box-shadow 0.3s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+      }
+
+      .feature-card h3 {
+        color: #667eea;
+        margin-bottom: 1rem;
+      }
+
+      /* 地區卡片 */
+      .areas-section {
+        margin: 3rem 0;
+      }
+
+      .areas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      .area-card {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+        cursor: pointer;
+      }
+
+      .area-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .area-card h3 {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        margin: 0;
+      }
+
+      .area-card p {
+        padding: 1.5rem;
+        color: #666;
+      }
+
+      .area-card .btn {
+        display: inline-block;
+        background: #667eea;
+        color: white;
+        padding: 0.8rem 1.5rem;
+        margin: 0 1.5rem 1.5rem;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: background 0.3s;
+      }
+
+      .area-card .btn:hover {
+        background: #764ba2;
+      }
+
+      /* 頁腳 */
+      footer {
+        background: #333;
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        margin-top: 3rem;
+      }
+
+      footer a {
+        color: #667eea;
+        text-decoration: none;
+      }
+
+      /* 響應式 */
+      @media (max-width: 768px) {
+        nav ul {
+          gap: 1rem;
+          font-size: 0.9rem;
+        }
+
+        .hero h1 {
+          font-size: 1.8rem;
+        }
+
+        .hero p {
+          font-size: 1rem;
+        }
+
+        .search-bar {
+          flex-direction: column;
+        }
+
+        .search-bar input,
+        .search-bar select {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 導航欄 -->
+    <nav>
+      <div class="logo">🏠 巨鴻地產</div>
+      <ul>
+        <li><a href="/">首頁</a></li>
+        <li><a href="/properties">房源查詢</a></li>
+        <li><a href="tel:0312345678">聯絡我們</a></li>
+        <li><a href="/admin/login">管理員</a></li>
+      </ul>
+    </nav>
+
+    <!-- 英雄區 -->
+    <div class="hero">
+      <h1>找到你的理想家園</h1>
+      <p>巨鴻地產 - 專業房屋買賣及租賃服務 | 桃園 • 新竹 • 苗栗</p>
+      <div class="search-bar">
+        <input type="text" id="keywords" placeholder="搜尋關鍵字..." />
+        <select id="area">
+          <option value="">選擇地區</option>
+          <option value="桃園">桃園</option>
+          <option value="新竹">新竹</option>
+          <option value="苗栗">苗栗</option>
+        </select>
+        <select id="type">
+          <option value="">房屋類型</option>
+          <option value="買">買</option>
+          <option value="租">租</option>
+        </select>
+        <button onclick="search()">搜尋房屋</button>
+      </div>
+    </div>
+
+    <!-- 主容器 -->
+    <div class="container">
+      <!-- 特色區 -->
+      <div class="features">
+        <div class="feature-card">
+          <h3>📊 房源豐富</h3>
+          <p>精選桃竹苗地區最優質房源，每天更新最新房屋資訊。</p>
+        </div>
+        <div class="feature-card">
+          <h3>💼 專業服務</h3>
+          <p>有著多年房產經驗的專業團隊，為您提供最佳諮詢。</p>
+        </div>
+        <div class="feature-card">
+          <h3>🏡 安心選購</h3>
+          <p>透明的交易流程，幫助您輕鬆找到理想房產。</p>
+        </div>
+      </div>
+
+      <!-- 地區介紹 -->
+      <div class="areas-section">
+        <h2>熱門地區</h2>
+        <div class="areas-grid">
+          <div class="area-card">
+            <h3>桃園</h3>
+            <p>台灣第一大直轄市，地理位置優越，房價增值潛力大。</p>
+            <a href="/properties?area=桃園" class="btn">瀏覽房源 →</a>
+          </div>
+          <div class="area-card">
+            <h3>新竹</h3>
+            <p>科技重鎮，產業集中，是投資置產的好選擇。</p>
+            <a href="/properties?area=新竹" class="btn">瀏覽房源 →</a>
+          </div>
+          <div class="area-card">
+            <h3>苗栗</h3>
+            <p>山城風情，文化深厚，生活質感佳。</p>
+            <a href="/properties?area=苗栗" class="btn">瀏覽房源 →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 頁腳 -->
+    <footer>
+      <p>
+        &copy; 2024 巨鴻地產有限公司 | 電話：(03) 1234-5678 |
+        地址：新竹市東區光復路
+      </p>
+      <p>
+        <a href="#">服務條款</a> | <a href="#">隱私政策</a> |
+        <a href="#">聯絡我們</a>
+      </p>
+    </footer>
+
+    <script>
+      function search() {
+        const keywords = document.getElementById("keywords").value;
+        const area = document.getElementById("area").value;
+        const type = document.getElementById("type").value;
+
+        let url = "/properties?";
+        if (keywords) url += `keywords=${keywords}&`;
+        if (area) url += `area=${area}&`;
+        if (type) url += `type=${type}&`;
+
+        window.location.href = url.slice(0, -1);
+      }
+
+      // 回車搜尋
+      document
+        .getElementById("keywords")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") search();
+        });
+    </script>
+  </body>
+</html>

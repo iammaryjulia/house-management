@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>管理後台 - 巨鴻地產</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei",
+          sans-serif;
+        background: #f5f5f5;
+        color: #333;
+      }
+
+      /* 頂部導航 */
+      .top-nav {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .top-nav .logo {
+        font-size: 1.3rem;
+        font-weight: bold;
+      }
+
+      .top-nav .user-menu {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .logout-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .logout-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      /* 主容器 */
+      .container {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        min-height: calc(100vh - 60px);
+      }
+
+      /* 側邊欄 */
+      .sidebar {
+        background: white;
+        padding: 1.5rem 0;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .sidebar-menu {
+        list-style: none;
+      }
+
+      .sidebar-menu li {
+        padding: 0;
+        margin: 0;
+      }
+
+      .sidebar-menu a {
+        display: block;
+        padding: 1rem 1.5rem;
+        color: #333;
+        text-decoration: none;
+        transition:
+          background 0.3s,
+          color 0.3s;
+        border-left: 3px solid transparent;
+      }
+
+      .sidebar-menu a:hover {
+        background: #f0f0f0;
+        color: #667eea;
+      }
+
+      .sidebar-menu a.active {
+        background: #f0f0f0;
+        color: #667eea;
+        border-left-color: #667eea;
+      }
+
+      /* 內容區 */
+      .content {
+        padding: 2rem;
+      }
+
+      .page-title {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+        color: #333;
+      }
+
+      /* 卡片 */
+      .card {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+
+      .card h3 {
+        color: #667eea;
+        margin-bottom: 1.5rem;
+        font-size: 1.3rem;
+      }
+
+      /* 按鈕 */
+      .btn {
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #764ba2;
+      }
+
+      .btn-danger {
+        background: #ff6b6b;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: #ff5252;
+      }
+
+      .btn-small {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+      }
+
+      /* 表格 */
+      .table-responsive {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+      }
+
+      table th {
+        background: #f0f0f0;
+        padding: 1rem;
+        text-align: left;
+        font-weight: bold;
+        color: #333;
+        border-bottom: 2px solid #ddd;
+      }
+
+      table td {
+        padding: 1rem;
+        border-bottom: 1px solid #eee;
+      }
+
+      table tr:hover {
+        background: #f9f9f9;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: bold;
+      }
+
+      .status-published {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status-draft {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      /* 表單 */
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 1rem;
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 150px;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+      }
+
+      /* 標籤 */
+      .badge {
+        display: inline-block;
+        padding: 0.4rem 0.8rem;
+        background: #f0f0f0;
+        color: #333;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      /* 統計卡片 */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #667eea;
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
+        color: #999;
+        font-size: 0.9rem;
+      }
+
+      /* 隱藏的內容 */
+      .page-section {
+        display: none;
+      }
+
+      .page-section.active {
+        display: block;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 2rem;
+        color: #667eea;
+      }
+
+      .message {
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+      }
+
+      .message.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .message.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          display: none;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+
+        .table-responsive {
+          font-size: 0.9rem;
+        }
+
+        table th,
+        table td {
+          padding: 0.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 頂部導航 -->
+    <div class="top-nav">
+      <div class="logo">🏠 巨鴻地產 - 管理後台</div>
+      <div class="user-menu">
+        <span id="username">管理員</span>
+        <button class="logout-btn" onclick="logout()">登出</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- 側邊欄 -->
+      <div class="sidebar">
+        <ul class="sidebar-menu">
+          <li>
+            <a
+              href="#"
+              onclick="showPage('dashboard')"
+              class="sidebar-link active"
+              data-page="dashboard"
+              >📊 儀表板</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              onclick="showPage('properties')"
+              class="sidebar-link"
+              data-page="properties"
+              >🏠 房源管理</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              onclick="showPage('add-property')"
+              class="sidebar-link"
+              data-page="add-property"
+              >➕ 發布房源</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              onclick="showPage('reviews')"
+              class="sidebar-link"
+              data-page="reviews"
+              >⭐ 評論管理</a
+            >
+          </li>
+          <li>
+            <a
+              href="#"
+              onclick="showPage('settings')"
+              class="sidebar-link"
+              data-page="settings"
+              >⚙️ 設置</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- 內容區 -->
+      <div class="content">
+        <!-- 儀表板 -->
+        <div id="dashboard" class="page-section active">
+          <h1 class="page-title">📊 儀表板</h1>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="totalProperties">0</div>
+              <div class="stat-label">總房源數</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="publishedProperties">0</div>
+              <div class="stat-label">已發布房源</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="pendingReviews">0</div>
+              <div class="stat-label">待審核評論</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>最近發布的房源</h3>
+            <div id="recentProperties" class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>房屋名稱</th>
+                    <th>地區</th>
+                    <th>價格</th>
+                    <th>狀態</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody id="recentPropertiesBody">
+                  <tr>
+                    <td colspan="5" style="text-align: center">載入中...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 房源管理 -->
+        <div id="properties" class="page-section">
+          <h1 class="page-title">🏠 房源管理</h1>
+
+          <div class="card">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1.5rem;
+              "
+            >
+              <h3 style="margin: 0">所有房源</h3>
+              <button
+                class="btn btn-primary"
+                onclick="showPage('add-property')"
+              >
+                ➕ 新增房源
+              </button>
+            </div>
+
+            <div id="propertiesList" class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>房屋名稱</th>
+                    <th>地區</th>
+                    <th>價格</th>
+                    <th>類型</th>
+                    <th>狀態</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody id="propertiesTableBody">
+                  <tr>
+                    <td colspan="6" style="text-align: center">載入中...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 發布房源 -->
+        <div id="add-property" class="page-section">
+          <h1 class="page-title">➕ 發布房源</h1>
+
+          <div class="card">
+            <form onsubmit="saveProperty(event)">
+              <div id="formMessage"></div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="title">房屋名稱 *</label>
+                  <input
+                    type="text"
+                    id="title"
+                    placeholder="如：桃園市中山路高級公寓"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="area">地區 *</label>
+                  <select id="area" required>
+                    <option value="">選擇地區</option>
+                    <option value="桃園">桃園</option>
+                    <option value="新竹">新竹</option>
+                    <option value="苗栗">苗栗</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="district">行政區 *</label>
+                  <input
+                    type="text"
+                    id="district"
+                    placeholder="如：中山區、東區"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="type">房屋類型 *</label>
+                  <select id="type" required>
+                    <option value="">選擇類型</option>
+                    <option value="買">買</option>
+                    <option value="租">租</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="price">價格 (萬元或月租) *</label>
+                  <input
+                    type="number"
+                    id="price"
+                    placeholder="如：350 或 8000"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="bedrooms">臥室數 *</label>
+                  <input
+                    type="number"
+                    id="bedrooms"
+                    placeholder="如：2"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="bathrooms">浴室數 *</label>
+                  <input
+                    type="number"
+                    id="bathrooms"
+                    placeholder="如：1"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="size">坪數 *</label>
+                  <input
+                    type="number"
+                    id="size"
+                    placeholder="如：25.5"
+                    step="0.1"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="description">房屋描述 *</label>
+                <textarea
+                  id="description"
+                  placeholder="詳細介紹房屋特色、裝修狀況、周邊環境等..."
+                  required
+                ></textarea>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="contact">聯絡人名稱 *</label>
+                  <input
+                    type="text"
+                    id="contact"
+                    placeholder="如：王先生"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="phone">聯絡電話 *</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    placeholder="如：0912345678"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="images">圖片URL (用逗號分隔)</label>
+                <input
+                  type="text"
+                  id="images"
+                  placeholder="https://example.com/img1.jpg, https://example.com/img2.jpg"
+                />
+              </div>
+
+              <div class="form-group">
+                <label>
+                  <input type="checkbox" id="published" /> ✅ 發布此房源
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-primary">保存房源</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- 評論管理 -->
+        <div id="reviews" class="page-section">
+          <h1 class="page-title">⭐ 評論管理</h1>
+
+          <div class="card">
+            <h3>待審核評論</h3>
+            <div id="reviewsList">
+              <p style="text-align: center; padding: 2rem; color: #999">
+                載入中...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 設置 -->
+        <div id="settings" class="page-section">
+          <h1 class="page-title">⚙️ 設置</h1>
+
+          <div class="card">
+            <h3>公司資訊</h3>
+            <div class="form-group">
+              <label>公司名稱</label>
+              <p>巨鴻地產有限公司</p>
+            </div>
+            <div class="form-group">
+              <label>聯絡電話</label>
+              <p>(03) 1234-5678</p>
+            </div>
+            <div class="form-group">
+              <label>服務地區</label>
+              <p>桃園、新竹、苗栗</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 頁面切換
+      function showPage(pageName) {
+        // 隱藏所有頁面
+        document.querySelectorAll(".page-section").forEach((el) => {
+          el.classList.remove("active");
+        });
+
+        // 更新側邊欄
+        document.querySelectorAll(".sidebar-link").forEach((link) => {
+          link.classList.remove("active");
+          if (link.dataset.page === pageName) {
+            link.classList.add("active");
+          }
+        });
+
+        // 顯示選定的頁面
+        const targetPage = document.getElementById(pageName);
+        if (targetPage) {
+          targetPage.classList.add("active");
+
+          // 根據頁面載入數據
+          if (pageName === "properties") {
+            loadProperties();
+          } else if (pageName === "dashboard") {
+            loadDashboard();
+          } else if (pageName === "reviews") {
+            loadReviews();
+          }
+        }
+      }
+
+      // 載入儀表板
+      async function loadDashboard() {
+        try {
+          const propertiesRes = await fetch("/admin/api/properties");
+          const properties = await propertiesRes.json();
+
+          const reviewsRes = await fetch("/admin/api/reviews");
+          const reviews = await reviewsRes.json();
+
+          const published = properties.filter((p) => p.published).length;
+          const pendingReviews = reviews.filter((r) => !r.approved).length;
+
+          document.getElementById("totalProperties").textContent =
+            properties.length;
+          document.getElementById("publishedProperties").textContent =
+            published;
+          document.getElementById("pendingReviews").textContent =
+            pendingReviews;
+
+          // 顯示最近的房源
+          const recentProps = properties.slice(0, 5);
+          const html = recentProps
+            .map(
+              (prop) => `
+                    <tr>
+                        <td>${prop.title}</td>
+                        <td>${prop.area} ${prop.district}</td>
+                        <td>${prop.price.toLocaleString()}</td>
+                        <td><span class="status-badge ${prop.published ? "status-published" : "status-draft"}">${prop.published ? "已發布" : "草稿"}</span></td>
+                        <td>
+                            <button class="btn btn-primary btn-small" onclick="editProperty('${prop.id}')">編輯</button>
+                            <button class="btn btn-danger btn-small" onclick="deleteProperty('${prop.id}')">刪除</button>
+                        </td>
+                    </tr>
+                `,
+            )
+            .join("");
+
+          document.getElementById("recentPropertiesBody").innerHTML =
+            html ||
+            '<tr><td colspan="5" style="text-align: center;">暫無房源</td></tr>';
+        } catch (error) {
+          console.error("載入儀表板失敗:", error);
+        }
+      }
+
+      // 載入房源列表
+      async function loadProperties() {
+        try {
+          const response = await fetch("/admin/api/properties");
+          const properties = await response.json();
+
+          const html = properties
+            .map(
+              (prop) => `
+                    <tr>
+                        <td>${prop.title}</td>
+                        <td>${prop.area}</td>
+                        <td>${prop.price.toLocaleString()}</td>
+                        <td>${prop.type}</td>
+                        <td><span class="status-badge ${prop.published ? "status-published" : "status-draft"}">${prop.published ? "已發布" : "草稿"}</span></td>
+                        <td>
+                            <button class="btn btn-primary btn-small" onclick="editProperty('${prop.id}')">編輯</button>
+                            <button class="btn btn-danger btn-small" onclick="deleteProperty('${prop.id}')">刪除</button>
+                        </td>
+                    </tr>
+                `,
+            )
+            .join("");
+
+          document.getElementById("propertiesTableBody").innerHTML =
+            html ||
+            '<tr><td colspan="6" style="text-align: center;">暫無房源</td></tr>';
+        } catch (error) {
+          console.error("載入房源失敗:", error);
+        }
+      }
+
+      // 保存房源
+      async function saveProperty(event) {
+        event.preventDefault();
+
+        const property = {
+          title: document.getElementById("title").value,
+          area: document.getElementById("area").value,
+          district: document.getElementById("district").value,
+          type: document.getElementById("type").value,
+          price: parseInt(document.getElementById("price").value),
+          bedrooms: parseInt(document.getElementById("bedrooms").value),
+          bathrooms: parseInt(document.getElementById("bathrooms").value),
+          size: parseFloat(document.getElementById("size").value),
+          description: document.getElementById("description").value,
+          contact: document.getElementById("contact").value,
+          phone: document.getElementById("phone").value,
+          images: document
+            .getElementById("images")
+            .value.split(",")
+            .map((s) => s.trim())
+            .filter((s) => s),
+          published: document.getElementById("published").checked,
+        };
+
+        try {
+          const response = await fetch("/admin/api/properties", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(property),
+          });
+
+          if (response.ok) {
+            document.getElementById("formMessage").innerHTML =
+              '<div class="message success">✅ 房源已保存</div>';
+            setTimeout(() => {
+              document.getElementById("formMessage").innerHTML = "";
+              document.querySelector("form").reset();
+            }, 2000);
+          } else {
+            document.getElementById("formMessage").innerHTML =
+              '<div class="message error">❌ 保存失敗</div>';
+          }
+        } catch (error) {
+          console.error("保存失敗:", error);
+          document.getElementById("formMessage").innerHTML =
+            '<div class="message error">❌ 保存失敗</div>';
+        }
+      }
+
+      // 刪除房源
+      async function deleteProperty(propertyId) {
+        if (!confirm("確定要刪除此房源嗎？")) return;
+
+        try {
+          const response = await fetch(`/admin/api/properties/${propertyId}`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            alert("房源已刪除");
+            loadProperties();
+          }
+        } catch (error) {
+          console.error("刪除失敗:", error);
+          alert("刪除失敗");
+        }
+      }
+
+      // 編輯房源
+      function editProperty(propertyId) {
+        alert("編輯功能開發中");
+      }
+
+      // 載入評論
+      async function loadReviews() {
+        try {
+          const response = await fetch("/admin/api/reviews");
+          const reviews = await response.json();
+
+          if (reviews.length === 0) {
+            document.getElementById("reviewsList").innerHTML =
+              '<p style="text-align: center; padding: 2rem; color: #999;">暫無待審核評論</p>';
+            return;
+          }
+
+          const html = reviews
+            .map(
+              (review) => `
+                    <div style="border: 1px solid #eee; padding: 1.5rem; border-radius: 4px; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <strong>${review.author}</strong>
+                            <span style="color: #999; font-size: 0.9rem;">${new Date(review.created_at).toLocaleDateString("zh-TW")}</span>
+                        </div>
+                        <div style="color: #ffc107; margin-bottom: 0.5rem;">${"⭐".repeat(review.rating)}</div>
+                        <p style="color: #666; margin-bottom: 1rem;">${review.content}</p>
+                        <button class="btn btn-primary btn-small" onclick="approveReview('${review.id}')">批准</button>
+                        <button class="btn btn-danger btn-small" onclick="rejectReview('${review.id}')">拒絕</button>
+                    </div>
+                `,
+            )
+            .join("");
+
+          document.getElementById("reviewsList").innerHTML = html;
+        } catch (error) {
+          console.error("載入評論失敗:", error);
+        }
+      }
+
+      // 批准評論
+      async function approveReview(reviewId) {
+        try {
+          const response = await fetch(
+            `/admin/api/reviews/${reviewId}/approve`,
+            {
+              method: "POST",
+            },
+          );
+
+          if (response.ok) {
+            alert("評論已批准");
+            loadReviews();
+          }
+        } catch (error) {
+          console.error("批准失敗:", error);
+        }
+      }
+
+      // 拒絕評論
+      function rejectReview(reviewId) {
+        alert("拒絕功能開發中");
+      }
+
+      // 登出
+      function logout() {
+        if (confirm("確定要登出嗎？")) {
+          window.location.href = "/admin/logout";
+        }
+      }
+
+      // 頁面載入時初始化
+      window.addEventListener("DOMContentLoaded", function () {
+        loadDashboard();
+      });
+    </script>
+  </body>
+</html>

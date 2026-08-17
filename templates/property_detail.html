@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>房屋詳情 - 巨鴻地產</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei",
+          sans-serif;
+        background: #f5f5f5;
+        color: #333;
+      }
+
+      /* 導航欄 */
+      nav {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      nav .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      nav ul {
+        list-style: none;
+        display: flex;
+        gap: 2rem;
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 2rem;
+      }
+
+      /* 麵包屑 */
+      .breadcrumb {
+        margin-bottom: 2rem;
+      }
+
+      .breadcrumb a {
+        color: #667eea;
+        text-decoration: none;
+        margin-right: 0.5rem;
+      }
+
+      /* 主內容 */
+      .property-detail {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+      }
+
+      .property-main {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .property-gallery {
+        width: 100%;
+        height: 400px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 5rem;
+        position: relative;
+      }
+
+      .property-gallery img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .gallery-nav {
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 0.5rem;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 0.5rem;
+        border-radius: 4px;
+      }
+
+      .gallery-dot {
+        width: 10px;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      .gallery-dot.active {
+        background: white;
+      }
+
+      .property-content {
+        padding: 2rem;
+      }
+
+      .property-title {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .property-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+        color: #666;
+      }
+
+      .property-price {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #ff6b6b;
+        margin: 1rem 0;
+      }
+
+      .property-specs {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin: 2rem 0;
+        padding: 2rem;
+        background: #f9f9f9;
+        border-radius: 8px;
+      }
+
+      .spec {
+        text-align: center;
+      }
+
+      .spec-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #667eea;
+      }
+
+      .spec-label {
+        color: #999;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+      }
+
+      .property-description {
+        margin: 2rem 0;
+        padding: 1.5rem;
+        background: #f9f9f9;
+        border-left: 4px solid #667eea;
+      }
+
+      .property-description h3 {
+        margin-bottom: 1rem;
+        color: #667eea;
+      }
+
+      /* 右邊欄 */
+      .property-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .contact-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      .contact-card h3 {
+        color: #667eea;
+        margin-bottom: 1rem;
+      }
+
+      .contact-info {
+        font-size: 1.1rem;
+        margin: 1rem 0;
+      }
+
+      .contact-phone {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #ff6b6b;
+        margin: 1rem 0;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 1rem;
+        margin: 0.5rem 0;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+        transition: background 0.3s;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #764ba2;
+      }
+
+      .btn-secondary {
+        background: #f0f0f0;
+        color: #333;
+      }
+
+      .btn-secondary:hover {
+        background: #ddd;
+      }
+
+      /* 評論區 */
+      .reviews-section {
+        margin-top: 3rem;
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .reviews-section h3 {
+        color: #667eea;
+        margin-bottom: 1.5rem;
+      }
+
+      .review-form {
+        background: #f9f9f9;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 1rem;
+      }
+
+      .review-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .review-item {
+        border: 1px solid #eee;
+        padding: 1.5rem;
+        border-radius: 4px;
+      }
+
+      .review-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+      }
+
+      .review-author {
+        font-weight: bold;
+        color: #333;
+      }
+
+      .review-date {
+        color: #999;
+        font-size: 0.9rem;
+      }
+
+      .review-rating {
+        color: #ffc107;
+        margin-bottom: 0.5rem;
+      }
+
+      .review-content {
+        color: #666;
+        line-height: 1.6;
+      }
+
+      /* 頁腳 */
+      footer {
+        background: #333;
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        margin-top: 3rem;
+      }
+
+      @media (max-width: 768px) {
+        .property-detail {
+          grid-template-columns: 1fr;
+        }
+
+        .property-gallery {
+          height: 250px;
+          font-size: 3rem;
+        }
+
+        .property-title {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 導航欄 -->
+    <nav>
+      <div class="logo">🏠 巨鴻地產</div>
+      <ul>
+        <li><a href="/">首頁</a></li>
+        <li><a href="/properties">房源查詢</a></li>
+        <li><a href="tel:0312345678">聯絡我們</a></li>
+      </ul>
+    </nav>
+
+    <div class="container">
+      <!-- 麵包屑 -->
+      <div class="breadcrumb">
+        <a href="/">首頁</a> > <a href="/properties">房源查詢</a> >
+        <span id="breadcrumb-title">房屋詳情</span>
+      </div>
+
+      <!-- 主內容 -->
+      <div id="loading" style="text-align: center; padding: 2rem">
+        載入中...
+      </div>
+      <div id="content" style="display: none">
+        <div class="property-detail">
+          <!-- 左邊 -->
+          <div class="property-main">
+            <div class="property-gallery">
+              <img id="mainImage" src="" alt="房屋圖片" style="display: none" />
+            </div>
+            <div class="gallery-nav" id="galleryNav"></div>
+
+            <div class="property-content">
+              <h1 class="property-title" id="propertyTitle"></h1>
+
+              <div class="property-meta">
+                <span>📍 <span id="propertyLocation"></span></span>
+                <span>🏢 <span id="propertyType"></span></span>
+                <span>📅 發布於 <span id="propertyDate"></span></span>
+              </div>
+
+              <div class="property-price" id="propertyPrice"></div>
+
+              <div class="property-specs">
+                <div class="spec">
+                  <div class="spec-value" id="bedrooms"></div>
+                  <div class="spec-label">臥室</div>
+                </div>
+                <div class="spec">
+                  <div class="spec-value" id="bathrooms"></div>
+                  <div class="spec-label">浴室</div>
+                </div>
+                <div class="spec">
+                  <div class="spec-value" id="size"></div>
+                  <div class="spec-label">坪數</div>
+                </div>
+              </div>
+
+              <div class="property-description">
+                <h3>房屋描述</h3>
+                <p id="propertyDescription"></p>
+              </div>
+            </div>
+
+            <!-- 評論區 -->
+            <div class="reviews-section">
+              <h3>⭐ 用戶評論</h3>
+
+              <div class="review-form">
+                <h4>發表評論</h4>
+                <div class="form-group">
+                  <label>您的名字</label>
+                  <input
+                    type="text"
+                    id="reviewAuthor"
+                    placeholder="請輸入您的名字"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>電子郵件</label>
+                  <input
+                    type="email"
+                    id="reviewEmail"
+                    placeholder="your@email.com"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>評分</label>
+                  <select id="reviewRating">
+                    <option value="5">⭐⭐⭐⭐⭐ 非常滿意</option>
+                    <option value="4">⭐⭐⭐⭐ 滿意</option>
+                    <option value="3">⭐⭐⭐ 普通</option>
+                    <option value="2">⭐⭐ 不滿意</option>
+                    <option value="1">⭐ 非常不滿意</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>評論內容</label>
+                  <textarea
+                    id="reviewContent"
+                    rows="4"
+                    placeholder="分享您的看法..."
+                  ></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="submitReview()">
+                  提交評論
+                </button>
+              </div>
+
+              <div id="reviewsList" class="review-list"></div>
+            </div>
+          </div>
+
+          <!-- 右邊 -->
+          <div class="property-sidebar">
+            <div class="contact-card">
+              <h3>💬 聯絡業務</h3>
+              <div class="contact-info" id="contactName"></div>
+              <div class="contact-phone" id="contactPhone"></div>
+              <button class="btn btn-primary" onclick="callAgent()">
+                立即聯絡
+              </button>
+              <button class="btn btn-secondary" onclick="shareProperty()">
+                分享房屋
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 頁腳 -->
+    <footer>
+      <p>&copy; 2024 巨鴻地產有限公司 | 電話：(03) 1234-5678</p>
+    </footer>
+
+    <script>
+      const propertyId =
+        new URLSearchParams(window.location.search).get("id") ||
+        window.location.pathname.split("/").pop();
+
+      async function loadProperty() {
+        try {
+          const response = await fetch(`/api/properties/${propertyId}`);
+          const property = await response.json();
+
+          if (property.error) {
+            document.getElementById("loading").innerHTML = "房屋未找到";
+            return;
+          }
+
+          displayProperty(property);
+          loadReviews();
+
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("content").style.display = "block";
+        } catch (error) {
+          console.error("載入失敗:", error);
+          document.getElementById("loading").innerHTML = "載入失敗";
+        }
+      }
+
+      function displayProperty(prop) {
+        document.getElementById("propertyTitle").textContent = prop.title;
+        document.getElementById("propertyLocation").textContent =
+          `${prop.area} ${prop.district}`;
+        document.getElementById("propertyType").textContent =
+          prop.type === "買" ? "買賣" : "租賃";
+        document.getElementById("propertyDate").textContent = new Date(
+          prop.created_at,
+        ).toLocaleDateString("zh-TW");
+        document.getElementById("propertyPrice").textContent =
+          `${prop.type === "租" ? "$" : ""}${prop.price.toLocaleString("zh-TW")}${prop.type === "租" ? "/月" : ""}`;
+        document.getElementById("bedrooms").textContent = `${prop.bedrooms}房`;
+        document.getElementById("bathrooms").textContent =
+          `${prop.bathrooms}衛`;
+        document.getElementById("size").textContent = `${prop.size}坪`;
+        document.getElementById("propertyDescription").textContent =
+          prop.description;
+        document.getElementById("contactName").textContent = prop.contact;
+        document.getElementById("contactPhone").textContent = prop.phone;
+        document.getElementById("breadcrumb-title").textContent = prop.title;
+
+        // 圖片
+        if (prop.images && prop.images.length > 0) {
+          document.getElementById("mainImage").src = prop.images[0];
+          document.getElementById("mainImage").style.display = "block";
+
+          const galleryNav = document.getElementById("galleryNav");
+          galleryNav.innerHTML = prop.images
+            .map(
+              (_, i) =>
+                `<div class="gallery-dot ${i === 0 ? "active" : ""}" onclick="changeImage(${i})"></div>`,
+            )
+            .join("");
+        }
+      }
+
+      function changeImage(index) {
+        // TODO: 實現圖片切換
+      }
+
+      async function loadReviews() {
+        try {
+          const response = await fetch(`/api/properties/${propertyId}/reviews`);
+          const reviews = await response.json();
+
+          const html = reviews
+            .map(
+              (review) => `
+                    <div class="review-item">
+                        <div class="review-header">
+                            <span class="review-author">${review.author}</span>
+                            <span class="review-date">${new Date(review.created_at).toLocaleDateString("zh-TW")}</span>
+                        </div>
+                        <div class="review-rating">${"⭐".repeat(review.rating)}</div>
+                        <div class="review-content">${review.content}</div>
+                    </div>
+                `,
+            )
+            .join("");
+
+          if (reviews.length === 0) {
+            document.getElementById("reviewsList").innerHTML =
+              '<p style="color: #999;">暫無評論</p>';
+          } else {
+            document.getElementById("reviewsList").innerHTML = html;
+          }
+        } catch (error) {
+          console.error("載入評論失敗:", error);
+        }
+      }
+
+      async function submitReview() {
+        const author = document.getElementById("reviewAuthor").value;
+        const email = document.getElementById("reviewEmail").value;
+        const rating = document.getElementById("reviewRating").value;
+        const content = document.getElementById("reviewContent").value;
+
+        if (!author || !content) {
+          alert("請填寫名字和評論內容");
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `/api/properties/${propertyId}/reviews`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                author,
+                email,
+                rating: parseInt(rating),
+                content,
+              }),
+            },
+          );
+
+          if (response.ok) {
+            alert("評論已提交，感謝您的意見！");
+            document.getElementById("reviewAuthor").value = "";
+            document.getElementById("reviewEmail").value = "";
+            document.getElementById("reviewContent").value = "";
+            loadReviews();
+          }
+        } catch (error) {
+          alert("提交失敗，請稍後重試");
+        }
+      }
+
+      function callAgent() {
+        const phone = document.getElementById("contactPhone").textContent;
+        window.location.href = `tel:${phone}`;
+      }
+
+      function shareProperty() {
+        const title = document.getElementById("propertyTitle").textContent;
+        const url = window.location.href;
+
+        if (navigator.share) {
+          navigator.share({
+            title: title,
+            text: "巨鴻地產推薦房屋",
+            url: url,
+          });
+        } else {
+          const text = `${title}\n${url}`;
+          navigator.clipboard.writeText(text).then(() => {
+            alert("已複製到剪貼板");
+          });
+        }
+      }
+
+      window.addEventListener("DOMContentLoaded", loadProperty);
+    </script>
+  </body>
+</html>
